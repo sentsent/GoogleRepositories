@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GoogleRepositories</string>
+    <string name="name">Repository name: </string>
+    <string name="description">Description: </string>
+</resources>
