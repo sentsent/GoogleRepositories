@@ -2,4 +2,8 @@
     <string name="app_name">GoogleRepositories</string>
     <string name="name">Repository name: </string>
     <string name="description">Description: </string>
+    <string name="more">More</string>
+    <string name="watchers_count">Watchers count: </string>
+    <string name="created_at">Created at: </string>
+    <string name="updated_at">Updated at: </string>
 </resources>
