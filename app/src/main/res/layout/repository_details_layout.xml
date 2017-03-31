@@ -5,7 +5,7 @@
     <data>
         <variable
             name="repository"
-            type="pl.sentia.googlerepositories.model.Repository" />
+            type="pl.sentia.googlerepositories.model.GitHubRepository" />
         <import type="android.view.View" />
     </data>
 

@@ -4,9 +4,11 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
 import pl.sentia.googlerepositories.databinding.ActivityMainBinding;
 import pl.sentia.googlerepositories.databinding.RepositoryDetailsLayoutBinding;
-import pl.sentia.googlerepositories.model.Repository;
+import pl.sentia.googlerepositories.model.GitHubRepository;
 import pl.sentia.googlerepositories.viewmodel.RepositoryViewer;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,9 +32,13 @@ public class MainActivity extends AppCompatActivity {
         mainActivityBinding.setRepositoryViewer(repositoryViewer);
     }
 
-    public static void bindToRepositoryDetails(Repository repository) {
+    public static void bindToRepositoryDetails(GitHubRepository repository) {
         RepositoryDetailsLayoutBinding repositoryDetailsLayoutBinding = DataBindingUtil.setContentView(MAIN_ACTIVITY, R.layout.repository_details_layout);
         repositoryDetailsLayoutBinding.setRepository(repository);
+    }
+
+    public static void announce(String message) {
+        Toast.makeText(MAIN_ACTIVITY, message, Toast.LENGTH_LONG).show();
     }
 
     public void onClickRepository(View v) {

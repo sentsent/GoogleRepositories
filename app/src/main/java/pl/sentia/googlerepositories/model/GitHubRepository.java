@@ -6,7 +6,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Date;
 
-public class Repository {
+public class GitHubRepository {
 
     @SerializedName("name")
     public String title;

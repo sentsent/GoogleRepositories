@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.google.gson.GsonBuilder;
@@ -11,20 +12,19 @@ import java.util.List;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import pl.sentia.googlerepositories.BR;
 import pl.sentia.googlerepositories.R;
-import pl.sentia.googlerepositories.model.Repository;
+import pl.sentia.googlerepositories.model.GitHubRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 import static pl.sentia.googlerepositories.MainActivity.MAIN_ACTIVITY;
 
 public class RepositoryViewer extends BaseObservable {
 
     public static final String API_URL = "https://api.github.com/";
-    public final ObservableList<Repository> repositories = new ObservableArrayList<>();
-    public final ItemBinding<Repository> repositoriesBinding = ItemBinding.of(BR.repository, R.layout.repository_layout);
+    public final ObservableList<GitHubRepository> repositories = new ObservableArrayList<>();
+    public final ItemBinding<GitHubRepository> repositoriesBinding = ItemBinding.of(BR.repository, R.layout.repository_layout);
     public boolean loadingRepositoriesProgressBarVisible;
     public boolean repositoryDetailsVisible;
 
@@ -37,7 +37,7 @@ public class RepositoryViewer extends BaseObservable {
 
     public void showRepositoryDetails(View v) {
         TextView repositoryTitle = (TextView) v.findViewById(R.id.title);
-        Repository repository = getRepository(repositoryTitle.getText().toString());
+        GitHubRepository repository = getRepository(repositoryTitle.getText().toString());
         MAIN_ACTIVITY.bindToRepositoryDetails(repository);
         setRepositoryDetailsVisible(true);
     }
@@ -62,9 +62,9 @@ public class RepositoryViewer extends BaseObservable {
         notifyPropertyChanged(BR.loadingRepositoriesProgressBarVisible);
     }
 
-    private Repository getRepository(String title) {
+    private GitHubRepository getRepository(String title) {
         if (repositories != null) {
-            for (Repository repo: repositories) {
+            for (GitHubRepository repo: repositories) {
                 if (repo.getTitle().equals(title)) {
                     return repo;
                 }
@@ -73,19 +73,25 @@ public class RepositoryViewer extends BaseObservable {
         return null;
     }
 
-    private void runRepositoriesLoadingRequest(String username, GitHubService service) {
-        service.listRepositories(username).enqueue(new Callback<List<Repository>>() {
+    private void runRepositoriesLoadingRequest(final String username, GitHubService service) {
+        service.listRepositories(username).enqueue(new Callback<List<GitHubRepository>>() {
             @Override
-            public void onResponse(Call<List<Repository>> call, Response<List<Repository>> response) {
+            public void onResponse(Call<List<GitHubRepository>> call, Response<List<GitHubRepository>> response) {
                 if(response.isSuccessful()) {
                     setLoadingRepositoriesProgressBarVisible(false);
                     repositories.addAll(response.body());
+                } else {
+                    String message = "Repository "+username+" "+response.message();
+                    MAIN_ACTIVITY.announce(message);
+                    Log.e("RepositoryViewer",message);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Repository>> call, Throwable t) {
-
+            public void onFailure(Call<List<GitHubRepository>> call, Throwable t) {
+                String message = "Repositories loading failure: "+t.getMessage();
+                MAIN_ACTIVITY.announce(message);
+                Log.e("RepositoryViewer",message);
             }
         });
     }
